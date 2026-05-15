@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import threading
 from queue import Queue
 import time
 from ultralytics import YOLO
@@ -9,6 +8,8 @@ from resources.config.setting import (
     COUNTING_LINE, DEVICE, TARGET_WIDTH, TARGET_HEIGHT,
     BBOX_SHRINK_FACTOR, BBOX_THICKNESS, TRACKER_TYPE
 )
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
+from PyQt5.QtGui import QImage
 
 def point_in_polygon(pt, polygon):
     return cv2.pointPolygonTest(np.array(polygon, np.int32), pt, False) >= 0
@@ -17,12 +18,14 @@ def get_side_of_line(p, line):
     x1, y1, x2, y2 = line
     return (x2 - x1) * (p[1] - y1) - (y2 - y1) * (p[0] - x1)
 
-class ThreadProcess(threading.Thread):
-    def __init__(self, capture_queue: Queue, process_queue: Queue):
+class ThreadProcess(QThread):
+    change_pixmap_signal = pyqtSignal(QImage)
+
+    def __init__(self, capture_queue: Queue):
         super().__init__()
         self.thread_running = False
         self.capture_queue = capture_queue
-        self.process_queue = process_queue
+        # self.process_queue = process_queue # No longer needed as we emit signal
         self.zone_pts = np.array(ZONE_POLYGON, np.int32)
         self.line_pts = COUNTING_LINE
         self.track_history = {}
@@ -120,9 +123,13 @@ class ThreadProcess(threading.Thread):
             cv2.putText(frame, f"IN: {self.count_in}", (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             cv2.putText(frame, f"OUT: {self.count_out}", (20, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
-            if self.process_queue.full():
-                self.process_queue.get()
-            self.process_queue.put([frame, []])
+            # Convert frame to QImage and emit signal
+            rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            h, w, ch = rgb_image.shape
+            bytes_per_line = ch * w
+            convert_to_qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+            p = convert_to_qt_format.scaled(TARGET_WIDTH, TARGET_HEIGHT, Qt.KeepAspectRatio)
+            self.change_pixmap_signal.emit(p)
 
     def stop(self):
         self.thread_running = False

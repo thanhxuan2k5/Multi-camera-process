@@ -10,9 +10,8 @@ class MainController(object):
         self.cameras_config = {}
         self.load_camera()
 
-
-        self.stream_config = {}
-        self.load_stream()
+        # self.stream_config = {} # Removed
+        # self.load_stream() # Removed
 
 
         self.list_camera: List[CameraController] = []
@@ -22,16 +21,16 @@ class MainController(object):
         with open('resources/config/camera.yml') as f:
             self.cameras_config = yaml.load(f, Loader=yaml.FullLoader)
 
-    def load_stream(self):
-        with open('resources/config/stream.yml') as f:
-            self.stream_config = yaml.load(f, Loader=yaml.FullLoader)
+    # def load_stream(self): # Removed
+    #     with open('resources/config/stream.yml') as f: # Removed
+    #         self.stream_config = yaml.load(f, Loader=yaml.FullLoader) # Removed
 
     def create_camera(self):
         for key, value in self.cameras_config.items():
             camera_id = key
             camera_url = value["url"]
             camera = CameraController(
-                camera_id, camera_url, self.stream_config["url"])
+                camera_id, camera_url) # Removed self.stream_config["url"]
             self.list_camera.append(camera)
 
     def start(self):
