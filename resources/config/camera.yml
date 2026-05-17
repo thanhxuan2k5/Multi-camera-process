@@ -1,8 +1,9 @@
 0:
   url: "D:/Multi-camera process/input/count-through.mp4"
+  zone_polygon: [[255, 633], [381, 319], [847, 310], [993, 632]]
+  counting_line: [414, 211, 805, 204]
 
-#1:
-#  url: "camera_url/video_path"
-#
-#2:
-#  url: "camera_url/video_path"
+1:
+  url: "D:/Multi-camera process/input/count-in.mp4"
+  zone_polygon: [[191, 428], [934, 158], [1161, 235], [479, 714]]
+  counting_line: [960, 710, 1248, 247]

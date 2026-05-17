@@ -2,12 +2,12 @@ import cv2
 import json
 import numpy as np
 
-# Danh sách điểm riêng biệt cho Line và Polygon
+
 line_points = []
 poly_points = []
-mode = "LINE" # Mặc định bắt đầu vẽ Line trước
+mode = "LINE"
 
-video_path = r"D:\intern(2)\input\count-through.mp4"
+video_path = r"D:\Multi-camera process\input\count-in.mp4"
 cap = cv2.VideoCapture(video_path)
 
 ret, frame = cap.read()
