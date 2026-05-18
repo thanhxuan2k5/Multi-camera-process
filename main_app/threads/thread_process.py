@@ -63,8 +63,13 @@ class ThreadProcess(QThread):
                     time.sleep(0.001)
                     continue
                 
-                raw_frame = self.capture_queue.get()
-                if raw_frame is None: continue
+                # Giải phóng toàn bộ khung hình cũ trong hàng đợi, chỉ giữ lại khung hình mới nhất (Zero Latency)
+                raw_frame = None
+                while not self.capture_queue.empty():
+                    raw_frame = self.capture_queue.get()
+                
+                if raw_frame is None: 
+                    continue
                 
                 # Resize frame for consistent processing dimensions
                 frame = cv2.resize(raw_frame, (TARGET_WIDTH, TARGET_HEIGHT))
@@ -130,7 +135,7 @@ class ThreadProcess(QThread):
                 h, w, ch = rgb_image.shape
                 bytes_per_line = ch * w
                 # Removed .scaled() here. Let MainWindow handle scaling for display.
-                convert_to_qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+                convert_to_qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
                 self.change_pixmap_signal.emit(self.camera_id, convert_to_qt_format)
         except Exception as e:
             print(f"Lỗi trong luồng xử lý camera {self.camera_id}: {e}")

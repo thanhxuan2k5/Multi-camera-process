@@ -10,7 +10,7 @@ CONFIRM_FRAMES = 5
 TARGET_WIDTH = 1280
 TARGET_HEIGHT = 720
 
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 # ZONE_POLYGON và COUNTING_LINE sẽ được định nghĩa riêng cho từng camera
 # ZONE_POLYGON = [[255, 633], [381, 319], [847, 310], [993, 632]]
