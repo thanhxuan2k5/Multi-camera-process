@@ -51,9 +51,7 @@ class ThreadCapture(threading.Thread):
     def stop(self):
         self.thread_running = False
         print("Dừng ghi dữ liệu từ camera: ", self.camera_url)
-        # Ensure cap is released if stop is called externally
-        # The run method also handles release when its loop finishes
-        # This check prevents calling release on a non-existent or already released cap
+
         if self.cap and self.cap.isOpened():
             self.cap.release()
             print(f"Đã giải phóng tài nguyên camera: {self.camera_url} từ phương thức stop().")

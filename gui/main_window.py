@@ -54,7 +54,10 @@ class VideoLabel(QLabel):
         if w <= 0 or h <= 0:
             w = TARGET_WIDTH
             h = TARGET_HEIGHT
-            
+
+        target_w = int(w * self.zoom_factor)
+        target_h = int(h * self.zoom_factor)
+
         target_w = int(w * self.zoom_factor)
         target_h = int(h * self.zoom_factor)
 
