@@ -42,7 +42,7 @@ class ThreadCapture(threading.Thread):
 
             time.sleep(0.01)
         
-        # Ensure cap is released when the thread finishes its loop
+
         if self.cap and self.cap.isOpened():
             self.cap.release()
             print(f"Đã giải phóng tài nguyên camera: {self.camera_url} khi luồng kết thúc.")

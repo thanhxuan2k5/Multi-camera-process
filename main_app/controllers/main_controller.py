@@ -20,7 +20,6 @@ class MainController(object):
     def create_camera(self):
         for key, value in self.cameras_config.items():
             camera_id = key
-            # Pass the entire value dictionary (which includes url and coordinates)
             camera = CameraController(camera_id, value)
             self.list_camera.append(camera)
 

@@ -56,14 +56,14 @@ class ThreadProcess(QThread):
         self.thread_running = True
         thickness = int(BBOX_THICKNESS)
         
-        try: # Added try-except block
+        try:
             while self.thread_running:
                 self.new_frame_time = time.time()
                 if self.capture_queue.empty():
                     time.sleep(0.001)
                     continue
                 
-                # Giải phóng toàn bộ khung hình cũ trong hàng đợi, chỉ giữ lại khung hình mới nhất (Zero Latency)
+
                 raw_frame = None
                 while not self.capture_queue.empty():
                     raw_frame = self.capture_queue.get()

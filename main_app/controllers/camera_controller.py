@@ -13,9 +13,7 @@ class CameraController(QObject):
         super().__init__()
         self.camera_id = camera_id
         self.camera_url = camera_config["url"]
-        
-        # Read zone_polygon and counting_line directly from config
-        # Provide default empty lists if not specified
+
         self.zone_polygon = camera_config.get("zone_polygon", [])
         self.counting_line = camera_config.get("counting_line", [])
 
@@ -31,7 +29,7 @@ class CameraController(QObject):
     def create_thread(self):
         self.thread_capture = ThreadCapture(self.camera_url, self.capture_queue)
 
-        # Pass zone_polygon and counting_line to ThreadProcess
+
         self.thread_process = ThreadProcess(
             self.camera_id,
             self.capture_queue,

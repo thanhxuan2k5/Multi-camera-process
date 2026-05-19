@@ -238,10 +238,8 @@ class MainWindow(QMainWindow):
 
         self.main_layout.addWidget(self.control_panel)
 
-        # Initialize controller
         self.main_controller = MainController()
 
-        # Connect signals and register cameras already defined in main_controller
         if self.main_controller.list_camera:
             for camera_controller in self.main_controller.list_camera:
                 self.register_camera(camera_controller.camera_id)
@@ -249,15 +247,14 @@ class MainWindow(QMainWindow):
         else:
             print("No cameras configured to display.")
 
-        # Rebuild/setup standard view
+
         self.rebuild_pages()
         self.show_grid_view()
 
-        # Start controller threads
+
         self.main_controller.start()
 
     def register_camera(self, camera_id: int):
-        """Registers a camera stream, creating its label and updating dropdown items."""
         if camera_id in self.camera_labels:
             return
 
@@ -271,11 +268,9 @@ class MainWindow(QMainWindow):
         self.rebuild_pages()
 
     def rebuild_pages(self):
-        """Distributes the camera labels across dynamic grid pages inside the stacked widget."""
-        # Save current active page index to restore it if possible
         old_page_index = self.grid_stacked_widget.currentIndex()
 
-        # Clear existing stacked pages
+
         while self.grid_stacked_widget.count() > 0:
             widget = self.grid_stacked_widget.widget(0)
             self.grid_stacked_widget.removeWidget(widget)
