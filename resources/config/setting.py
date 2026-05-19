@@ -1,7 +1,7 @@
 import torch
 
 RTSP_URL = "rtsp://localhost:8554/live"
-MODEL_PATH = "resources/weights/yolov8n.pt"
+MODEL_PATH = "resources/weights/yolov8n.engine"
 CONFIDENCE = 0.5
 SHRINK_FACTOR = 0.2
 CONFIRM_FRAMES = 5
