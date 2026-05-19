@@ -261,8 +261,7 @@ class MainWindow(QMainWindow):
         label = VideoLabel(camera_id, self)
         label.double_clicked.connect(self.toggle_maximize_camera)
         self.camera_labels[camera_id] = label
-        
-        # Add to selector dropdown
+
         self.camera_selector.addItem(f"Camera {camera_id}", camera_id)
         
         self.rebuild_pages()
@@ -280,7 +279,7 @@ class MainWindow(QMainWindow):
         num_cams = len(sorted_cam_ids)
         
         if num_cams == 0:
-            # Create a placeholder empty page
+
             empty_widget = QWidget()
             empty_layout = QVBoxLayout(empty_widget)
             placeholder = QLabel("Không tìm thấy luồng camera nào.\nHãy kiểm tra file cấu hình camera.yml.")
@@ -356,7 +355,7 @@ class MainWindow(QMainWindow):
         self.maximized_camera_id = None
         self.main_stacked_widget.setCurrentIndex(0)  # Show Grid mode page
         
-        # Sync selector dropdown without triggering events
+
         self.camera_selector.blockSignals(True)
         self.camera_selector.setCurrentIndex(0)
         self.camera_selector.blockSignals(False)
@@ -375,7 +374,7 @@ class MainWindow(QMainWindow):
 
         self.main_stacked_widget.setCurrentIndex(1)  # Show Single View page
         
-        # Sync selector dropdown without triggering events
+
         self.camera_selector.blockSignals(True)
         for i in range(self.camera_selector.count()):
             if self.camera_selector.itemData(i) == camera_id:
@@ -386,14 +385,12 @@ class MainWindow(QMainWindow):
         self.update_pagination_ui()
 
     def toggle_maximize_camera(self, camera_id: int):
-        """Double clicking a slot toggles between grid view and maximized view."""
         if self.maximized_camera_id is not None:
             self.show_grid_view()
         else:
             self.show_single_view(camera_id)
 
     def on_selector_changed(self, index: int):
-        """Dropdown selector index change handler."""
         camera_id = self.camera_selector.itemData(index)
         if camera_id == -1:
             self.show_grid_view()
@@ -407,10 +404,10 @@ class MainWindow(QMainWindow):
 
         self.last_qimages[camera_id] = q_image
 
-        # Update the grid label
+
         self.camera_labels[camera_id].set_qimage(q_image, self.current_zoom_factor)
 
-        # Update single view label if currently showing this camera
+
         if self.maximized_camera_id == camera_id:
             self.single_view_label.set_qimage(q_image, self.current_zoom_factor)
 
@@ -431,12 +428,10 @@ class MainWindow(QMainWindow):
         self._reapply_zoom()
 
     def _reapply_zoom(self):
-        # Re-apply zoom to all labels
         for cam_id, label in self.camera_labels.items():
             if cam_id in self.last_qimages:
                 label.set_qimage(self.last_qimages[cam_id], self.current_zoom_factor)
 
-        # Re-apply to single view if active
         if self.maximized_camera_id is not None and self.maximized_camera_id in self.last_qimages:
             self.single_view_label.set_qimage(self.last_qimages[self.maximized_camera_id], self.current_zoom_factor)
 
