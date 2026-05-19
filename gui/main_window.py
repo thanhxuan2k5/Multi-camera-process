@@ -293,7 +293,7 @@ class MainWindow(QMainWindow):
             self.page_indicator.setText("Trang 1 / 1")
             return
 
-        # Calculate pages
+
         num_pages = max(1, (num_cams + self.cameras_per_page - 1) // self.cameras_per_page)
 
         for p in range(num_pages):
@@ -309,7 +309,7 @@ class MainWindow(QMainWindow):
                 cam_id = sorted_cam_ids[i]
                 label = self.camera_labels[cam_id]
                 
-                # 2x2 grid math
+
                 local_idx = i - start_idx
                 row = local_idx // 2
                 col = local_idx % 2
@@ -317,7 +317,7 @@ class MainWindow(QMainWindow):
 
             self.grid_stacked_widget.addWidget(page_widget)
 
-        # Restore index if valid
+
         if 0 <= old_page_index < num_pages:
             self.grid_stacked_widget.setCurrentIndex(old_page_index)
         else:
@@ -326,7 +326,6 @@ class MainWindow(QMainWindow):
         self.update_pagination_ui()
 
     def update_pagination_ui(self):
-        """Enables/disables navigation buttons and updates the page text."""
         if self.maximized_camera_id is not None:
             # In single camera view, hide pagination
             self.prev_button.setDisabled(True)

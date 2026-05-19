@@ -47,7 +47,7 @@ def export():
     else:
         print("COUNTING_LINE = [] # (Chưa chọn đủ 2 điểm)")
         
-    # Format cho Polygon
+
     print(f"ZONE_POLYGON = {poly_points}")
     print("="*50 + "\n")
 

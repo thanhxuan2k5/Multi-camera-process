@@ -9,11 +9,11 @@ class ThreadCapture(threading.Thread):
         self.thread_running = False
         self.camera_url = camera_url
         self.capture_queue = capture_queue
-        self.cap = None # Initialize cap here
+        self.cap = None
 
     def run(self):
         print("Bắt đầu ghi lại URL: ", self.camera_url)
-        self.cap = cv2.VideoCapture(self.camera_url) # Assign to self.cap
+        self.cap = cv2.VideoCapture(self.camera_url)
         self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
         
         self.thread_running = True

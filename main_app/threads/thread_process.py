@@ -71,7 +71,7 @@ class ThreadProcess(QThread):
                 if raw_frame is None: 
                     continue
                 
-                # Resize frame for consistent processing dimensions
+
                 frame = cv2.resize(raw_frame, (TARGET_WIDTH, TARGET_HEIGHT))
                 
                 results = self.model.track(frame, persist=True, classes=[0], 
@@ -130,17 +130,17 @@ class ThreadProcess(QThread):
                 cv2.putText(frame, f"IN: {self.count_in}", (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                 cv2.putText(frame, f"OUT: {self.count_out}", (20, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
-                # Convert frame to QImage and emit signal
+
                 rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 h, w, ch = rgb_image.shape
                 bytes_per_line = ch * w
-                # Removed .scaled() here. Let MainWindow handle scaling for display.
+
                 convert_to_qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
                 self.change_pixmap_signal.emit(self.camera_id, convert_to_qt_format)
         except Exception as e:
             print(f"Lỗi trong luồng xử lý camera {self.camera_id}: {e}")
         finally:
-            self.thread_running = False # Ensure thread stops if an error occurs
+            self.thread_running = False
 
     def stop(self):
         self.thread_running = False
