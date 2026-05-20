@@ -41,7 +41,6 @@ class ThreadProcess(QThread):
 
     def load_model(self):
         self.model = YOLO(MODEL_PATH)
-        # Dòng này đã bị xóa: self.model.to(DEVICE)
         self.tracker = OcSort(min_conf=CONFIDENCE)
 
     def run(self):

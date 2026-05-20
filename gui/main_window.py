@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         self.main_controller = MainController()
         for camera_controller in self.main_controller.list_camera:
             self.register_camera(camera_controller.camera_id)
-            camera_controller.thread_process.change_pixmap_signal.connect(self.update_image)
+            camera_controller.thread_process.change_pixmap_signal.connect(self.update_image) #liên kết tín hiệu hình ảnh từ luồng ThreadProcess tới giao diện của nó.
 
         self.rebuild_pages(); self.show_grid_view(); self.main_controller.start()
 
@@ -180,7 +180,7 @@ class MainWindow(QMainWindow):
 
     def open_camera_manager(self):
         dialog = CameraManagerDialog(self.main_controller.cameras_config, self)
-        dialog.camera_added.connect(lambda cid, cfg: (self.register_camera(cid), self.main_controller.add_camera_stream(cid, cfg).thread_process.change_pixmap_signal.connect(self.update_image)))
+        dialog.camera_added.connect(lambda cid, cfg: (self.register_camera(cid), self.main_controller.add_camera_stream(cid, cfg).thread_process.change_pixmap_signal.connect(self.update_image)))#liên kết tín hiệu hình ảnh từ luồng ThreadProcess tới giao diện của nó.
         dialog.camera_updated.connect(lambda cid, cfg: self.main_controller.update_camera_stream(cid, cfg).thread_process.change_pixmap_signal.connect(self.update_image))
         dialog.camera_deleted.connect(self.on_camera_deleted); dialog.exec_()
 
