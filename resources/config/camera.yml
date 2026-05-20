@@ -1,9 +1,32 @@
 0:
-  url: "D:/Multi-camera process/input/count-through.mp4"
-  zone_polygon: [[255, 633], [381, 319], [847, 310], [993, 632]]
-  counting_line: [414, 211, 805, 204]
-
+  counting_line:
+  - 418
+  - 216
+  - 794
+  - 212
+  url: D:/Multi-camera process/input/count-through.mp4
+  zone_polygon:
+  - - 259
+    - 617
+  - - 1001
+    - 604
+  - - 827
+    - 267
+  - - 380
+    - 270
 1:
-  url: "D:/Multi-camera process/input/count-in.mp4"
-  zone_polygon: [[191, 428], [934, 158], [1161, 235], [479, 714]]
-  counting_line: [960, 710, 1248, 247]
+  counting_line:
+  - 960
+  - 710
+  - 1248
+  - 247
+  url: D:/Multi-camera process/input/count-in.mp4
+  zone_polygon:
+  - - 191
+    - 428
+  - - 934
+    - 158
+  - - 1161
+    - 235
+  - - 479
+    - 714

@@ -7,7 +7,7 @@ line_points = []
 poly_points = []
 mode = "LINE"
 
-video_path = r"D:\Multi-camera process\input\count-in.mp4"
+video_path = r"D:\Multi-camera process\input\count-through.mp4"
 cap = cv2.VideoCapture(video_path)
 
 ret, frame = cap.read()

@@ -176,3 +176,7 @@ class ThreadProcess(QThread):
 
     def stop(self):
         self.thread_running = False
+        try:
+            self.capture_queue.put_nowait(None)
+        except Exception:
+            pass

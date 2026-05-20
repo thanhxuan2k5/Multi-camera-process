@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         self.main_controller = MainController()
         for camera_controller in self.main_controller.list_camera:
             self.register_camera(camera_controller.camera_id)
-            camera_controller.change_pixmap_signal.connect(self.update_image)
+            camera_controller.thread_process.change_pixmap_signal.connect(self.update_image)
 
         self.rebuild_pages(); self.show_grid_view(); self.main_controller.start()
 
@@ -104,6 +104,22 @@ class MainWindow(QMainWindow):
             page_w = QWidget(); grid_lay = QGridLayout(page_w); grid_lay.setContentsMargins(0, 0, 0, 0); grid_lay.setSpacing(12)
             start_idx = p * self.cameras_per_page
             end_idx = min(start_idx + self.cameras_per_page, num_cams)
+            cams_on_page = end_idx - start_idx
+
+            # Thiết lập stretch tỉ lệ đều nhau cho các hàng và cột trong grid
+            if cams_on_page == 1:
+                grid_lay.setRowStretch(0, 1)
+                grid_lay.setColumnStretch(0, 1)
+            elif cams_on_page == 2:
+                grid_lay.setRowStretch(0, 1)
+                grid_lay.setColumnStretch(0, 1)
+                grid_lay.setColumnStretch(1, 1)
+            else:  # 3 hoặc 4 camera
+                grid_lay.setRowStretch(0, 1)
+                grid_lay.setRowStretch(1, 1)
+                grid_lay.setColumnStretch(0, 1)
+                grid_lay.setColumnStretch(1, 1)
+
             for i in range(start_idx, end_idx):
                 cam_id = sorted_cam_ids[i]; local_idx = i - start_idx
                 grid_lay.addWidget(self.camera_labels[cam_id], local_idx // 2, local_idx % 2)
@@ -150,7 +166,7 @@ class MainWindow(QMainWindow):
         self.show_grid_view() if camera_id == -1 else self.show_single_view(camera_id)
 
     def update_image(self, camera_id: int, q_image: QImage):
-        if camera_id not in self.camera_labels: self.register_camera(camera_id)
+        if camera_id not in self.camera_labels: return
         self.last_qimages[camera_id] = q_image
         self.camera_labels[camera_id].set_qimage(q_image, self.current_zoom_factor)
         if self.maximized_camera_id == camera_id: self.single_view_label.set_qimage(q_image, self.current_zoom_factor)
@@ -164,8 +180,8 @@ class MainWindow(QMainWindow):
 
     def open_camera_manager(self):
         dialog = CameraManagerDialog(self.main_controller.cameras_config, self)
-        dialog.camera_added.connect(lambda cid, cfg: (self.register_camera(cid), self.main_controller.add_camera_stream(cid, cfg).change_pixmap_signal.connect(self.update_image)))
-        dialog.camera_updated.connect(lambda cid, cfg: self.main_controller.update_camera_stream(cid, cfg).change_pixmap_signal.connect(self.update_image))
+        dialog.camera_added.connect(lambda cid, cfg: (self.register_camera(cid), self.main_controller.add_camera_stream(cid, cfg).thread_process.change_pixmap_signal.connect(self.update_image)))
+        dialog.camera_updated.connect(lambda cid, cfg: self.main_controller.update_camera_stream(cid, cfg).thread_process.change_pixmap_signal.connect(self.update_image))
         dialog.camera_deleted.connect(self.on_camera_deleted); dialog.exec_()
 
     def on_camera_deleted(self, camera_id: int):

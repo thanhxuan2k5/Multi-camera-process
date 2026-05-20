@@ -2,15 +2,11 @@ from queue import Queue
 from ..threads import *
 from threading import Thread
 from typing import List
-from PyQt5.QtCore import pyqtSignal, QObject
-from PyQt5.QtGui import QImage
 
 
-class CameraController(QObject):
-    change_pixmap_signal = pyqtSignal(int, QImage)
+class CameraController(object):
 
     def __init__(self, camera_id: int, camera_config: dict) -> None:
-        super().__init__()
         self.camera_id = camera_id
         self.camera_url = camera_config["url"]
 
@@ -36,10 +32,6 @@ class CameraController(QObject):
             self.zone_polygon,
             self.counting_line
         )
-
-        self.thread_process.change_pixmap_signal.connect(self.change_pixmap_signal)
-
-
         self.list_thread = [self.thread_capture,
                             self.thread_process]
 
