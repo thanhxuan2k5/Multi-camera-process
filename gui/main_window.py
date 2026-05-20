@@ -6,6 +6,7 @@ from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtGui import QImage, QPixmap, QFont
 from main_app.controllers.main_controller import MainController
 from resources.config.setting import TARGET_WIDTH, TARGET_HEIGHT
+from gui.camera_manager import CameraManagerDialog
 
 class VideoLabel(QLabel):
 
@@ -182,6 +183,11 @@ class MainWindow(QMainWindow):
         self.camera_selector.currentIndexChanged.connect(self.on_selector_changed)
         self.header_layout.addWidget(self.camera_selector)
         
+        # Camera Manager Button
+        self.manage_cameras_btn = QPushButton("⚙ Quản lý Camera")
+        self.manage_cameras_btn.clicked.connect(self.open_camera_manager)
+        self.header_layout.addWidget(self.manage_cameras_btn)
+        
         self.main_layout.addLayout(self.header_layout)
 
         # Main Stacked Layout (Page 0: Grid mode, Page 1: Single view mode)
@@ -243,7 +249,7 @@ class MainWindow(QMainWindow):
         if self.main_controller.list_camera:
             for camera_controller in self.main_controller.list_camera:
                 self.register_camera(camera_controller.camera_id)
-                camera_controller.change_pixmap_signal.connect(self.update_image)
+                camera_controller.change_pixmap_signal.connect(self.update_image)#...
         else:
             print("No cameras configured to display.")
 
@@ -434,6 +440,47 @@ class MainWindow(QMainWindow):
 
         if self.maximized_camera_id is not None and self.maximized_camera_id in self.last_qimages:
             self.single_view_label.set_qimage(self.last_qimages[self.maximized_camera_id], self.current_zoom_factor)
+
+    def open_camera_manager(self):
+        dialog = CameraManagerDialog(self.main_controller.cameras_config, self)
+        dialog.camera_added.connect(self.on_camera_added)
+        dialog.camera_updated.connect(self.on_camera_updated)
+        dialog.camera_deleted.connect(self.on_camera_deleted)
+        dialog.exec_()
+
+    def on_camera_added(self, camera_id: int, camera_config: dict):
+        camera_controller = self.main_controller.add_camera_stream(camera_id, camera_config)
+        self.register_camera(camera_id)
+        camera_controller.change_pixmap_signal.connect(self.update_image)
+
+    def on_camera_updated(self, camera_id: int, camera_config: dict):
+        camera_controller = self.main_controller.update_camera_stream(camera_id, camera_config)
+        camera_controller.change_pixmap_signal.connect(self.update_image)
+
+    def on_camera_deleted(self, camera_id: int):
+        self.main_controller.delete_camera_stream(camera_id)
+        
+        # Remove VideoLabel widget
+        if camera_id in self.camera_labels:
+            label = self.camera_labels[camera_id]
+            label.deleteLater()
+            del self.camera_labels[camera_id]
+
+        # Remove from combobox
+        for i in range(self.camera_selector.count()):
+            if self.camera_selector.itemData(i) == camera_id:
+                self.camera_selector.removeItem(i)
+                break
+
+        # Remove from cached images
+        if camera_id in self.last_qimages:
+            del self.last_qimages[camera_id]
+
+        # Revert single view if the deleted camera was maximized
+        if self.maximized_camera_id == camera_id:
+            self.show_grid_view()
+
+        self.rebuild_pages()
 
     def closeEvent(self, event):
         if self.main_controller:

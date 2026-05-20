@@ -23,7 +23,7 @@ class CameraController(QObject):
         self.create_thread()
 
     def create_queue(self):
-        self.capture_queue = Queue(maxsize=30)
+        self.capture_queue = Queue(maxsize=2)
 
 
     def create_thread(self):
