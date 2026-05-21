@@ -33,7 +33,7 @@ class ThreadProcess(QThread):
         self.count_out = 0
         # Các biến để tính FPS ổn định
         self.fps_update_interval = 0.5  # Cập nhật FPS hiển thị mỗi 0.5 giây
-        self.fps_frame_counter = 0      # Đếm số khung hình đã xử lý trong khoảng interval
+        self.fps_frame_counter = 0      # Đếm số khung hình đã xử lý
         self.fps_start_time = time.time()
         self.displayed_fps = 0.0
 
@@ -41,7 +41,12 @@ class ThreadProcess(QThread):
 
     def load_model(self):
         self.model = YOLO(MODEL_PATH)
-        self.tracker = OcSort(min_conf=CONFIDENCE)
+        self.tracker = OcSort(
+            min_conf=CONFIDENCE,
+            max_age=30,
+            min_hits=3,
+            iou_threshold=0.3,
+        )
 
     def run(self):
         print(f"Bắt đầu xử lý: Device={DEVICE}")

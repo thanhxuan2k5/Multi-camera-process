@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Hệ thống Giám sát Đa luồng Camera")
         self.showMaximized(); self.setStyleSheet(MAIN_WINDOW_STYLE)
 
-        self.cameras_per_page = 4; self.current_zoom_factor = 1.0
+        self.cameras_per_page = 4; self.current_zoom_factor = 1.0 ###
         self.last_qimages = {}; self.camera_labels = {}; self.maximized_camera_id = None
 
         self.central_widget = QWidget(); self.central_widget.setObjectName("central_widget")
@@ -72,11 +72,12 @@ class MainWindow(QMainWindow):
         self.main_layout.addWidget(self.control_panel)
 
         self.main_controller = MainController()
-        for camera_controller in self.main_controller.list_camera:
+        for camera_controller in self.main_controller.list_camera:##
             self.register_camera(camera_controller.camera_id)
             camera_controller.thread_process.change_pixmap_signal.connect(self.update_image) #liên kết tín hiệu hình ảnh từ luồng ThreadProcess tới giao diện của nó.
 
-        self.rebuild_pages(); self.show_grid_view(); self.main_controller.start()
+        self.rebuild_pages(); self.show_grid_view();
+        self.main_controller.start()
 
     def register_camera(self, camera_id: int):
         if camera_id in self.camera_labels: return
